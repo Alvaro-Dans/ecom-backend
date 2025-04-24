@@ -14,7 +14,7 @@ COPY ${MODULE}/pom.xml ${MODULE}/pom.xml
 RUN ./mvnw dependency:go-offline
 
 # Copiar código fuente de todo el proyecto
-COPY . .
+COPY ../../docker .
 
 # Ejecutar tests del módulo
 RUN ./mvnw -pl ${MODULE} test

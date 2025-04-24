@@ -1,32 +1,42 @@
 package com.tfg.backend.infrastructure.inbound.rest.dto.request;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 public record ProductRequest(
-        @NotBlank(message = "El nombre del producto es obligatorio")
+        @NotNull(message = "El ID del producto es obligatorio")
+        UUID id,
+
+        @NotBlank(message = "El nombre es obligatorio")
         String name,
 
-        @NotBlank(message = "La descripción del producto es obligatoria")
+        @NotBlank(message = "La descripción es obligatoria")
         String description,
 
         @NotNull(message = "La marca es obligatoria")
-        BrandRequest brand,
+        String brand,
 
         @NotNull(message = "La categoría es obligatoria")
-        CategoryRequest category,
+        String category,
 
-        SubcategoryRequest subcategory,
+        @PositiveOrZero(message = "El stock no puede ser negativo")
+        int stock,
 
-        @NotNull(message = "El stock es obligatorio")
-        @Min(value = 0, message = "El stock no puede ser menor a 0")
-        Integer stock,
+        @NotNull(message = "El precio es obligatorio")
+        BigDecimal price,
 
-        @NotNull(message = "Los precios son obligatorios")
-        List<PriceRequest> prices,
+        String image,
 
-        List<ProductImageRequest> images
+        @NotNull(message = "La fecha de creación es obligatoria")
+        LocalDateTime createdAt,
 
-) {}
-
+        @NotNull(message = "La fecha de última modificación es obligatoria")
+        LocalDateTime updatedAt
+) {
+}

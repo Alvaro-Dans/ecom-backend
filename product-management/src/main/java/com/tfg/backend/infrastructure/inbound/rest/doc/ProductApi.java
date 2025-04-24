@@ -1,7 +1,8 @@
 package com.tfg.backend.infrastructure.inbound.rest.doc;
 
 import com.tfg.backend.infrastructure.inbound.rest.dto.request.ProductRequest;
-import com.tfg.backend.infrastructure.inbound.rest.dto.response.ProductResponseDTO;
+import com.tfg.backend.infrastructure.inbound.rest.dto.response.PagedProductsResponse;
+import com.tfg.backend.infrastructure.inbound.rest.dto.response.ProductResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -10,7 +11,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,12 +24,12 @@ public interface ProductApi {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Producto creado correctamente",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ProductResponseDTO.class))),
+                            schema = @Schema(implementation = ProductResponse.class))),
             @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos", content = @Content)
     })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    ResponseEntity<ProductResponseDTO> createProduct(
+    void createProduct(
             @RequestBody
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Datos del producto a crear",
@@ -43,36 +43,44 @@ public interface ProductApi {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Producto encontrado",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ProductResponseDTO.class))),
+                            schema = @Schema(implementation = ProductResponse.class))),
             @ApiResponse(responseCode = "404", description = "Producto no encontrado", content = @Content)
     })
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<ProductResponseDTO> getProduct(
+    ProductResponse getProduct(
             @Parameter(description = "ID del producto", required = true)
             @PathVariable UUID id
     );
 
-    @Operation(summary = "Listar todos los productos")
+    @Operation(summary = "Listar productos con paginación")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Listado de productos",
+            @ApiResponse(responseCode = "200", description = "Listado de productos paginado",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ProductResponseDTO.class)))
+                            schema = @Schema(implementation = ProductResponse.class)))
     })
-    @GetMapping
+    @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<List<ProductResponseDTO>> getAllProducts();
+    PagedProductsResponse getProductsPaged(
+            @Parameter(description = "Número de página (empezando en 0)", example = "0")
+            @RequestParam(name = "page", defaultValue = "0") int page,
+
+            @Parameter(description = "Tamaño de página", example = "10")
+            @RequestParam(name = "size", defaultValue = "10") int size
+    );
+
+
 
     @Operation(summary = "Actualizar un producto por su ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Producto actualizado correctamente",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ProductResponseDTO.class))),
+                            schema = @Schema(implementation = ProductResponse.class))),
             @ApiResponse(responseCode = "404", description = "Producto no encontrado", content = @Content)
     })
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<ProductResponseDTO> updateProduct(
+    ProductResponse updateProduct(
             @Parameter(description = "ID del producto", required = true)
             @PathVariable UUID id,
             @RequestBody
@@ -91,7 +99,7 @@ public interface ProductApi {
     })
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    ResponseEntity<Void> deleteProduct(
+    void deleteProduct(
             @Parameter(description = "ID del producto", required = true)
             @PathVariable UUID id
     );

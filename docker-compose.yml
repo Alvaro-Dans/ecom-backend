@@ -2,10 +2,22 @@ version: '3.8'
 
 services:
 
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ecommerce
+      POSTGRES_PASSWORD: ecommerce
+      POSTGRES_DB: ecommerce_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./.init/sql:/docker-entrypoint-initdb.d
+      - db_data:/var/lib/postgresql/data
+
   product-management:
     build:
       context: .
-      dockerfile: docker/Dockerfile
+      dockerfile: .init/docker/Dockerfile
       args:
         MODULE: product
     working_dir: /app/product
@@ -19,7 +31,7 @@ services:
   order-management:
     build:
       context: .
-      dockerfile: docker/Dockerfile
+      dockerfile: .init/docker/Dockerfile
       args:
         MODULE: order
     working_dir: /app/order
@@ -29,32 +41,6 @@ services:
       - "8082:8080"
     depends_on:
       - db
-
-  gateway-service:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile
-      args:
-        MODULE: gateway
-    working_dir: /app/gateway
-    volumes:
-      - ./gateway:/app/gateway
-    ports:
-      - "8080:8080"
-    depends_on:
-      - catalog-service
-      - order-service
-
-  db:
-    image: postgres:16
-    environment:
-      POSTGRES_USER: ecommerce
-      POSTGRES_PASSWORD: ecommerce
-      POSTGRES_DB: ecommerce_db
-    ports:
-      - "5432:5432"
-    volumes:
-      - db_data:/var/lib/postgresql/data
 
 volumes:
   db_data:
