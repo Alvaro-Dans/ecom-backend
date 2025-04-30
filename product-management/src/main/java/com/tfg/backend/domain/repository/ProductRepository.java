@@ -1,7 +1,6 @@
 package com.tfg.backend.domain.repository;
 
 import com.tfg.backend.domain.Product;
-import com.tfg.backend.infrastructure.outbound.persistence.entity.JpaProduct;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,5 +16,5 @@ public interface ProductRepository {
 
     List<Product> findAll();
 
-    List<Product> findProductsPaged(int page, int size);
+    List<Product> findProductsPagedAndSorted(int page, int size, String sort);
 }

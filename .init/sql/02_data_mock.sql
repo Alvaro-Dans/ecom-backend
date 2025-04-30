@@ -1,39 +1,9 @@
--- Insert marcas
-INSERT INTO brand (id, name, logo_url) VALUES
-                                           ('11111111-1111-1111-1111-111111111111', 'Yamaha', 'https://logos.com/yamaha.png'),
-                                           ('22222222-2222-2222-2222-222222222222', 'Kawasaki', 'https://logos.com/kawasaki.png');
-
--- Insert categoría y subcategoría
-INSERT INTO category (id, name, description) VALUES
-    ('33333333-3333-3333-3333-333333333333', 'Equipamiento', 'Ropa y protecciones para moto');
-
-INSERT INTO subcategory (id, name, category_id) VALUES
-    ('44444444-4444-4444-4444-444444444444', 'Cascos', '33333333-3333-3333-3333-333333333333');
-
--- Insert precio primero, ya que product ahora necesita price_id como FK
-INSERT INTO price (id, amount, currency) VALUES
-    ('66666666-6666-6666-6666-666666666666', 179.99, 'EUR');
-
--- Insert producto con referencia a price_id
-INSERT INTO product (id, name, description, brand_id, category_id, subcategory_id, price_id, stock, created_at, updated_at) VALUES
-    ('55555555-5555-5555-5555-555555555555',
-     'Casco Integral ZX-R',
-     'Casco integral con diseño aerodinámico y ventilación optimizada.',
-     '22222222-2222-2222-2222-222222222222',
-     '33333333-3333-3333-3333-333333333333',
-     '44444444-4444-4444-4444-444444444444',
-     '66666666-6666-6666-6666-666666666666',
-     15,
-     NOW(),
-     NOW());
-
--- Insert imagen del producto
-INSERT INTO product_image (id, product_id, url, is_main) VALUES
-    ('77777777-7777-7777-7777-777777777777',
-     '55555555-5555-5555-5555-555555555555',
-     'https://images.com/casco1.jpg',
-     true);
-
--- Insert inventario
-INSERT INTO inventory (product_id, quantity, location) VALUES
-    ('55555555-5555-5555-5555-555555555555', 15, 'Almacén Central');
+INSERT INTO public.products (id, brand, category, description, image, name, price, stock, created_at, updated_at) VALUES (1, 'Alpinestars', 'Helmets', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.', '/images/products/alp_r10.jpeg', 'Alpinestarts R10', 200.00, 82, '1970-01-01 00:00:00.200000', '1970-01-01 00:00:00.200000');
+INSERT INTO public.products (id, brand, category, description, image, name, price, stock, created_at, updated_at) VALUES (2, 'AGV', 'Helmets',  'Nunc viverra imperdiet enim. Fusce est. Vivamus a tellus.', '/images/products/agv_pista.jpeg', 'AGV Pista', 150.00, 75, '1970-01-01 00:00:00.200000', '1970-01-01 00:00:00.150000');
+INSERT INTO public.products (id, brand, category, description, image, name, price, stock, created_at, updated_at) VALUES (16, 'Armure', 'Boots',  'Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin pharetra nonummy pede. Mauris et orci.', '/images/products/armure_boots.jpeg', 'Armure Boots', 199.99, 69, '1970-01-01 00:00:00.200000', '1970-01-01 00:00:00.199000');
+INSERT INTO public.products (id, brand, category, description, image, name, price, stock, created_at, updated_at) VALUES (14, 'Alpinestars', 'Boots',  'Suspendisse dui purus, scelerisque at, vulputate vitae, pretium mattis, nunc. Mauris eget neque at sem venenatis eleifend. Ut nonummy.', '/images/products/alp_boots.jpeg', 'Alpinestars Boots', 250.00, 49, '1970-01-01 00:00:00.200000', '1970-01-01 00:00:00.250000');
+INSERT INTO public.products (id, brand, category, description, image, name, price, stock, created_at, updated_at) VALUES (8, 'Dainese', 'Jackets',  'Suspendisse dui purus, scelerisque at, vulputate vitae, pretium mattis, nunc. Mauris eget neque at sem venenatis eleifend. Ut nonummy.', '/images/products/dainese_jacket.jpeg', 'Dainese Jacket', 8.00, 6, '1970-01-01 00:00:00.200000', '1970-01-01 00:00:00.008000');
+INSERT INTO public.products (id, brand, category, description, image, name, price, stock, created_at, updated_at) VALUES (7, 'Alpinestars', 'Jackets',  'Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.', '/images/products/alp_air.jpeg', 'Alpinestars Air', 10.00, 32, '1970-01-01 00:00:00.200000', '1970-01-01 00:00:00.010000');
+INSERT INTO public.products (id, brand, category, description, image, name, price, stock, created_at, updated_at) VALUES (10, 'Alpinestars', 'Gloves',  'Nunc viverra imperdiet enim. Fusce est. Vivamus a tellus.', '/images/products/alp_spv8.jpeg', 'Alpinestars SPV8', 18.00, 74, '1970-01-01 00:00:00.200000', '1970-01-01 00:00:00.018000');
+INSERT INTO public.products (id, brand, category, description, image, name, price, stock, created_at, updated_at) VALUES (11, 'Dainese', 'Gloves',  'Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin pharetra nonummy pede. Mauris et orci.', '/images/products/dainese_gloves.jpeg', 'Dainese Gloves', 15.00, 19, '1970-01-01 00:00:00.200000', '1970-01-01 00:00:00.015000');
+INSERT INTO public.products (id, brand, category, description, image, name, price, stock, created_at, updated_at) VALUES (15, 'Dainese', 'Boots',  'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.', '/images/products/dainese_boots.jpeg', 'Dainese Boots', 189.99, 28, '1970-01-01 00:00:00.200000', '1970-01-01 00:00:00.189000');

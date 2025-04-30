@@ -6,12 +6,10 @@ import jakarta.validation.constraints.PositiveOrZero;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
 
 public record ProductRequest(
         @NotNull(message = "El ID del producto es obligatorio")
-        UUID id,
+        Long id,
 
         @NotBlank(message = "El nombre es obligatorio")
         String name,

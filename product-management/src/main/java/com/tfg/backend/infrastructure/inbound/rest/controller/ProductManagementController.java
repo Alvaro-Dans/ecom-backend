@@ -11,6 +11,7 @@ import com.tfg.backend.infrastructure.inbound.rest.dto.response.ProductResponse;
 import com.tfg.backend.infrastructure.mapper.ProductDtoMapper;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,9 +44,9 @@ public class ProductManagementController implements ProductApi {
     }
 
     @Override
-    public PagedProductsResponse getProductsPaged(int page, int size) {
-        productFinder.findProductsPaged(page, size).stream().map(productDtoMapper::toResponse).toList();
-        return null;
+    public PagedProductsResponse getProductsPagedAndSorted(int page, int size, String sort) {
+        List<ProductResponse> productListResponse = productFinder.findProductsPagedAndSorted(page, size, sort).stream().map(productDtoMapper::toResponse).toList();
+        return new PagedProductsResponse(page, size, productFinder.count(), productListResponse);
     }
 
     @Override
@@ -56,5 +57,15 @@ public class ProductManagementController implements ProductApi {
     @Override
     public void deleteProduct(UUID id) {
         this.productDeleter.deleteProduct(id);
+    }
+
+    @Override
+    public List<String> getAllBrands() {
+        return new HashSet<>(productFinder.getAllBrands()).stream().sorted().toList();
+    }
+
+    @Override
+    public List<String> getAllTypes() {
+        return new HashSet<>(productFinder.getAllTypes()).stream().sorted().toList();
     }
 }

@@ -16,12 +16,24 @@ public class ProductFinder {
         this.productRepository = productRepository;
     }
 
-    public List<Product> findProductsPaged(int page, int size) {
-        return productRepository.findProductsPaged(page, size);
+    public List<Product> findProductsPagedAndSorted(int page, int size, String sort) {
+        return productRepository.findProductsPagedAndSorted(page, size, sort);
     }
 
     public Product findById(UUID id) {
         // TODO manejar excepcion
         return productRepository.findById(id).orElse(null);
+    }
+
+    public int count() {
+        return productRepository.findAll().size();
+    }
+
+    public List<String> getAllBrands() {
+        return productRepository.findAll().stream().map(Product::getBrand).toList();
+    }
+
+    public List<String> getAllTypes() {
+        return productRepository.findAll().stream().map(Product::getCategory).toList();
     }
 }

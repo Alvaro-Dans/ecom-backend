@@ -5,6 +5,7 @@ import com.tfg.backend.domain.repository.ProductRepository;
 import com.tfg.backend.infrastructure.outbound.persistence.mapper.ProductJpaMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -42,8 +43,33 @@ public class PostgreSQLRepository implements ProductRepository {
     }
 
     @Override
-    public List<Product> findProductsPaged(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public List<Product> findProductsPagedAndSorted(int page, int size, String sort) {
+        Sort sortBy;
+
+        // Aseguramos los campos válidos
+        if (sort.equalsIgnoreCase("priceAsc")) {
+            sortBy = Sort.by(Sort.Direction.ASC, "price");
+        } else if (sort.equalsIgnoreCase("priceDesc")) {
+            // Asegúrate que el atributo 'price.amount' esté mapeado correctamente
+            sortBy = Sort.by(Sort.Direction.DESC, "price");
+        } else {
+            // Fallback por defecto si el parámetro no es válido
+            sortBy = Sort.by("name");
+        }
+
+        // TODO filters
+        /* Specification
+        Specification<JpaProduct> spec = Specification.where(null);
+
+        if (brandIds != null && !brandIds.isEmpty()) {
+            spec = spec.and((root, query, cb) -> root.get("brand").get("id").in(brandIds));
+        }
+
+        if (typeIds != null && !typeIds.isEmpty()) {
+            spec = spec.and((root, query, cb) -> root.get("category").get("id").in(typeIds)); // o subcategory
+        }*/
+
+        Pageable pageable = PageRequest.of(page - 1, size, sortBy);
         return productsJpaRepository.findAll(pageable)
                 .map(ProductJpaMapper::toDomain).toList();
     }

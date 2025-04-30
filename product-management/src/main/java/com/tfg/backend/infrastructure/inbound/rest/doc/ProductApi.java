@@ -61,12 +61,17 @@ public interface ProductApi {
     })
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    PagedProductsResponse getProductsPaged(
+    PagedProductsResponse getProductsPagedAndSorted(
             @Parameter(description = "Número de página (empezando en 0)", example = "0")
-            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "pageIndex", defaultValue = "0") int page,
 
             @Parameter(description = "Tamaño de página", example = "10")
-            @RequestParam(name = "size", defaultValue = "10") int size
+            @RequestParam(name = "pageSize", defaultValue = "10") int size,
+
+            @Parameter(description = "Criterio de ordenación", example = "name")
+            @RequestParam(name = "sort", defaultValue = "name") String sort
+
+
     );
 
 
@@ -103,4 +108,24 @@ public interface ProductApi {
             @Parameter(description = "ID del producto", required = true)
             @PathVariable UUID id
     );
+
+    @Operation(summary = "Listar todas las marcas")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Listado de marcas",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = String.class)))
+    })
+    @GetMapping("/brands")
+    @ResponseStatus(HttpStatus.OK)
+    List<String> getAllBrands();
+
+    @Operation(summary = "Listar todos los tipos de producto")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Listado de tipos",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = String.class)))
+    })
+    @GetMapping("/types")
+    @ResponseStatus(HttpStatus.OK)
+    List<String> getAllTypes();
 }
