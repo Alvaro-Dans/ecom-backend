@@ -22,7 +22,8 @@
 
 	<modules>
 		<module>product-management</module>
-	</modules>
+        <module>user-management</module>
+    </modules>
 
 	<dependencies>
 		<dependency>
