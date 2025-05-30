@@ -1,11 +1,11 @@
 spring:
   application:
-    name: product-management
+    name: account-management
   datasource:
     url: jdbc:postgresql://localhost:5432/ecommerce_db
     username: ecommerce
     password: ecommerce
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     show-sql: true
