@@ -17,9 +17,7 @@ public class ProductDtoMapper {
                 product.getCategory(),
                 product.getStock(),
                 product.getPrice(),
-                product.getImage(),
-                product.getCreatedAt(),
-                product.getUpdatedAt()
+                product.getImage()
         );
     }
 
@@ -34,9 +32,7 @@ public class ProductDtoMapper {
                 request.category(),
                 request.stock(),
                 request.price(),
-                request.image(),
-                request.createdAt(),
-                request.updatedAt()
+                request.image()
         );
     }
 

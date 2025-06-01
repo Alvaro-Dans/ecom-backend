@@ -14,7 +14,7 @@ public class ProductDeleter {
         this.productRepository = productRepository;
     }
 
-    public void deleteProduct(UUID id) {
+    public void deleteProduct(Long id) {
         productRepository.delete(id);
     }
 }

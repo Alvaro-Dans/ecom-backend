@@ -39,7 +39,7 @@ public class ProductManagementController implements ProductApi {
     }
 
     @Override
-    public ProductResponse getProduct(UUID id) {
+    public ProductResponse getProduct(Long id) {
         return productDtoMapper.toResponse(this.productFinder.findById(id));
     }
 
@@ -50,12 +50,12 @@ public class ProductManagementController implements ProductApi {
     }
 
     @Override
-    public ProductResponse updateProduct(UUID id, ProductRequest productRequest) {
+    public ProductResponse updateProduct(Long id, ProductRequest productRequest) {
         return productDtoMapper.toResponse(productUpdater.updateProduct(productDtoMapper.toDomain(productRequest)));
     }
 
     @Override
-    public void deleteProduct(UUID id) {
+    public void deleteProduct(Long id) {
         this.productDeleter.deleteProduct(id);
     }
 

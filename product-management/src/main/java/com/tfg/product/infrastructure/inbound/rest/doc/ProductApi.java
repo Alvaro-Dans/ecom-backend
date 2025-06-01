@@ -50,7 +50,7 @@ public interface ProductApi {
     @ResponseStatus(HttpStatus.OK)
     ProductResponse getProduct(
             @Parameter(description = "ID del producto", required = true)
-            @PathVariable UUID id
+            @PathVariable Long id
     );
 
     @Operation(summary = "Listar productos con paginación")
@@ -87,7 +87,7 @@ public interface ProductApi {
     @ResponseStatus(HttpStatus.OK)
     ProductResponse updateProduct(
             @Parameter(description = "ID del producto", required = true)
-            @PathVariable UUID id,
+            @PathVariable Long id,
             @RequestBody
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Datos actualizados del producto",
@@ -106,7 +106,7 @@ public interface ProductApi {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void deleteProduct(
             @Parameter(description = "ID del producto", required = true)
-            @PathVariable UUID id
+            @PathVariable Long id
     );
 
     @Operation(summary = "Listar todas las marcas")

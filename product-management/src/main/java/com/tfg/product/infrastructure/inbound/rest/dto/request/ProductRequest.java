@@ -29,12 +29,6 @@ public record ProductRequest(
         @NotNull(message = "El precio es obligatorio")
         BigDecimal price,
 
-        String image,
-
-        @NotNull(message = "La fecha de creación es obligatoria")
-        LocalDateTime createdAt,
-
-        @NotNull(message = "La fecha de última modificación es obligatoria")
-        LocalDateTime updatedAt
+        String image
 ) {
 }

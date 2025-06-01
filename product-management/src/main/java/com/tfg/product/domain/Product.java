@@ -28,9 +28,5 @@ public class Product {
 
     private String image;
 
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
-
 }
 

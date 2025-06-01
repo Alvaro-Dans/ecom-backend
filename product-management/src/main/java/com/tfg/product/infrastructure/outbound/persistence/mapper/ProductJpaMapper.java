@@ -16,9 +16,7 @@ public class ProductJpaMapper {
                 jpaProduct.getCategory(),
                 jpaProduct.getStock(),
                 jpaProduct.getPrice(),
-                jpaProduct.getImage(),
-                jpaProduct.getCreatedAt(),
-                jpaProduct.getUpdatedAt()
+                jpaProduct.getImage()
         );
     }
 
@@ -33,8 +31,6 @@ public class ProductJpaMapper {
         jpaProduct.setCategory(product.getCategory());
         jpaProduct.setImage(product.getImage());
         jpaProduct.setPrice(product.getPrice());
-        jpaProduct.setCreatedAt(product.getCreatedAt());
-        jpaProduct.setUpdatedAt(product.getUpdatedAt());
         return jpaProduct;
     }
 

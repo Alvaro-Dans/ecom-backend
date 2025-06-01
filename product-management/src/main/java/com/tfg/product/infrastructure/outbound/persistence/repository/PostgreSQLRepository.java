@@ -28,12 +28,12 @@ public class PostgreSQLRepository implements ProductRepository {
     }
 
     @Override
-    public void delete(UUID id) {
+    public void delete(Long id) {
         productsJpaRepository.deleteById(id);
     }
 
     @Override
-    public Optional<Product> findById(UUID id) {
+    public Optional<Product> findById(Long id) {
         return productsJpaRepository.findById(id).map(ProductJpaMapper::toDomain);
     }
 

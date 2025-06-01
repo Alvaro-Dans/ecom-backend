@@ -20,7 +20,7 @@ public class ProductFinder {
         return productRepository.findProductsPagedAndSorted(page, size, sort);
     }
 
-    public Product findById(UUID id) {
+    public Product findById(Long id) {
         // TODO manejar excepcion
         return productRepository.findById(id).orElse(null);
     }
