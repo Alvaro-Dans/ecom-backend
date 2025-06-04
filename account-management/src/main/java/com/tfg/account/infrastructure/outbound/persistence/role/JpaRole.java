@@ -5,7 +5,6 @@ import lombok.Data;
 
 @Entity
 @Table(name = "roles")
-@Data
 public class JpaRole {
 
     @Id
@@ -15,4 +14,19 @@ public class JpaRole {
     @Column(unique = true, nullable = false)
     private String name;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

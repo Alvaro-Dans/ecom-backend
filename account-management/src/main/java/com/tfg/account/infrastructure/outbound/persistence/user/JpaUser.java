@@ -13,7 +13,6 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users")
-@Data
 public class JpaUser {
 
     @Id
@@ -43,4 +42,59 @@ public class JpaUser {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<JpaRole> roles = new HashSet<>();
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
+    public JpaAddress getAddress() {
+        return address;
+    }
+
+    public void setAddress(JpaAddress address) {
+        this.address = address;
+    }
+
+    public Set<JpaRole> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<JpaRole> roles) {
+        this.roles = roles;
+    }
 }

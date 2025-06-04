@@ -4,8 +4,12 @@ import com.tfg.account.infrastructure.inbound.rest.dto.AddressDto;
 import com.tfg.account.infrastructure.inbound.rest.dto.request.LoginRequestDto;
 import com.tfg.account.infrastructure.inbound.rest.dto.request.RegisterDto;
 import com.tfg.account.infrastructure.inbound.rest.dto.response.UserInfoDto;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.info.Contact;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,11 +19,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @Validated
-@Tag(name = "Account API", description = "Operaciones de registro, autenticación y gestión de cuenta de usuario")
 @RequestMapping("/api/v1/account")
 public interface AccountApi {
 
@@ -108,4 +112,8 @@ public interface AccountApi {
     @PostMapping("/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     ResponseEntity<Void> logout();
+
+    @GetMapping("/validate-session")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<Void> validateSession(Authentication auth);
 }

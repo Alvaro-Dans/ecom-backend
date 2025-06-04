@@ -9,15 +9,6 @@ public class Address {
     private String postalCode;
     private String country;
 
-    public Address(Long id, String line1, String line2, String city, String state, String postalCode, String country) {
-        this.id = id;
-        this.line1 = line1;
-        this.line2 = line2;
-        this.city = city;
-        this.state = state;
-        this.postalCode = postalCode;
-        this.country = country;
-    }
 
     public Long getId() {
         return id;

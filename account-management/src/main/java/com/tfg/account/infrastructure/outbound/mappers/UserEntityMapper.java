@@ -3,7 +3,6 @@ package com.tfg.account.infrastructure.outbound.mappers;
 
 import com.tfg.account.domain.user.User;
 import com.tfg.account.infrastructure.outbound.persistence.user.JpaUser;
-import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 
 
@@ -12,5 +11,5 @@ public interface UserEntityMapper {
 
     JpaUser toEntity(User domain);
 
-    User toDomain(JpaUser entity, @Context MappingContext mappingContext);
+    User toDomain(JpaUser entity);
 }

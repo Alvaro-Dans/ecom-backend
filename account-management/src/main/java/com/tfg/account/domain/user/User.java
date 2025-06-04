@@ -5,6 +5,7 @@ import com.tfg.account.domain.role.Role;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Set;
 
 
 public class User {
@@ -14,9 +15,9 @@ public class User {
     private String email;
     private String passwordHash;
     private Address address;
-    private List<Role> roles;
+    private Set<Role> roles;
 
-    public User(Long id, String firstName, String lastName, String email, String passwordHash, Address address, List<Role> roles) {
+    public User(Long id, String firstName, String lastName, String email, String passwordHash, Address address, Set<Role> roles) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -74,11 +75,11 @@ public class User {
         this.address = address;
     }
 
-    public List<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 }

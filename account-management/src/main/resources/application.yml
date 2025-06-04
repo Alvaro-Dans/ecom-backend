@@ -10,4 +10,15 @@ spring:
       ddl-auto: update
     show-sql: true
 server:
-  port: 8081
+  port: 8082
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+  open-api:
+    info:
+      title: "API de Gestión de Usuarios"
+      description: "Esta API permite crear, registrar y autenticar usuarios en el sistema"
+      version: "1.0.0"

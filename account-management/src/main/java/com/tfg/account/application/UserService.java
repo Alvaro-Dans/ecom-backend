@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService {
@@ -25,7 +26,7 @@ public class UserService {
 
     public void register(String firstName, String lastName, String email, String rawPassword) {
         String hash = passwordEncoder.encode(rawPassword);
-        User user = new User(null, firstName, lastName, email, hash, null, List.of(roleRepository.findByName("ROLE_USER")));
+        User user = new User(null, firstName, lastName, email, hash, null, Set.of(roleRepository.findByName("USER")));
         userRepo.save(user);
     }
 

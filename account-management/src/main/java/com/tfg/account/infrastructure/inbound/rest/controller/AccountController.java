@@ -20,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -101,6 +102,16 @@ public class AccountController implements AccountApi {
     @Override
     public ResponseEntity<Void> logout() {
         SecurityContextHolder.clearContext();
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Este endpoint valida simplemente que la sesión (JSESSIONID) sea de un usuario autenticado.
+     * Si el cliente envía la cookie JSESSIONID y la sesión existe y está autenticada → 200 OK.
+     * Si no hay sesión o está caducada → 401 Unauthorized (Spring lo manejará automáticamente).
+     */
+    @Override
+    public ResponseEntity<Void> validateSession(Authentication auth) {
         return ResponseEntity.noContent().build();
     }
 }
