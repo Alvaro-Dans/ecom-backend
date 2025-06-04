@@ -1,4 +1,4 @@
-package com.tfg.product.application.create;
+package com.tfg.product.application.product.create;
 
 import com.tfg.product.domain.Product;
 import com.tfg.product.domain.repository.ProductRepository;

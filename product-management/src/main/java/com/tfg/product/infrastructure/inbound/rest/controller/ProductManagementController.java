@@ -1,9 +1,9 @@
 package com.tfg.product.infrastructure.inbound.rest.controller;
 
-import com.tfg.product.application.create.ProductCreator;
-import com.tfg.product.application.delete.ProductDeleter;
-import com.tfg.product.application.find.ProductFinder;
-import com.tfg.product.application.update.ProductUpdater;
+import com.tfg.product.application.product.create.ProductCreator;
+import com.tfg.product.application.product.delete.ProductDeleter;
+import com.tfg.product.application.product.find.ProductFinder;
+import com.tfg.product.application.product.update.ProductUpdater;
 import com.tfg.product.infrastructure.inbound.rest.doc.ProductApi;
 import com.tfg.product.infrastructure.inbound.rest.dto.request.ProductRequest;
 import com.tfg.product.infrastructure.inbound.rest.dto.response.PagedProductsResponse;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 public class ProductManagementController implements ProductApi {

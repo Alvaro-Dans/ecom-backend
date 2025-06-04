@@ -1,4 +1,4 @@
-package com.tfg.product.application.update;
+package com.tfg.product.application.product.update;
 
 import com.tfg.product.domain.Product;
 import com.tfg.product.domain.repository.ProductRepository;

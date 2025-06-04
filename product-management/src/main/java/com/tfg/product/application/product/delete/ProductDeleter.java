@@ -1,4 +1,4 @@
-package com.tfg.product.application.delete;
+package com.tfg.product.application.product.delete;
 
 import com.tfg.product.domain.repository.ProductRepository;
 import org.springframework.stereotype.Service;

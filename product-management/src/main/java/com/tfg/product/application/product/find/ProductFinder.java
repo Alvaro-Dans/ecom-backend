@@ -1,4 +1,4 @@
-package com.tfg.product.application.find;
+package com.tfg.product.application.product.find;
 
 import com.tfg.product.domain.Product;
 import com.tfg.product.domain.repository.ProductRepository;
