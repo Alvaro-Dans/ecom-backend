@@ -23,6 +23,8 @@
 	<modules>
 		<module>product-management</module>
         <module>account-management</module>
+		<module>payment-management</module>
+		<module>order-management</module>
     </modules>
 
 	<dependencies>

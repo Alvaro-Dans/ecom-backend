@@ -14,33 +14,51 @@ services:
       - ./.init/sql:/docker-entrypoint-initdb.d
       - db_data:/var/lib/postgresql/data
 
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
   product-management:
     build:
-      context: .
-      dockerfile: .init/docker/Dockerfile
+      context: .                # el build context es la carpeta product/
+      dockerfile: ./.init/docker/Dockerfile
       args:
-        MODULE: product
-    working_dir: /app/product
-    volumes:
-      - ./product:/app/product
+        MODULE: product-management
     ports:
-      - "8081:8080"
+      - "8081:8080"                      # host 8081 → contenedor 8080
     depends_on:
       - db
+      - redis
+
+  account-management:
+    build:
+      context: ./account-management                 # contexto = carpeta account/
+      dockerfile: ../.init/docker/Dockerfile
+    ports:
+      - "8082:8080"                      # host 8082 → contenedor 8080
+    depends_on:
+      - db
+      - redis
+
+  payment-management:
+    build:
+      context: ./payment-management                 # contexto = carpeta payment/
+      dockerfile: ../.init/docker/Dockerfile
+    ports:
+      - "8083:8080"                      # host 8083 → contenedor 8080
+    depends_on:
+      - redis
 
   order-management:
     build:
-      context: .
-      dockerfile: .init/docker/Dockerfile
-      args:
-        MODULE: order
-    working_dir: /app/order
-    volumes:
-      - ./order:/app/order
+      context: ./order-management                   # contexto = carpeta order/
+      dockerfile: ../.init/docker/Dockerfile
     ports:
-      - "8082:8080"
+      - "8084:8080"                      # host 8084 → contenedor 8080
     depends_on:
       - db
+      - redis
 
 volumes:
   db_data:
