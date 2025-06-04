@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: payment-management
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ecommerce_db
+    username: ecommerce
+    password: ecommerce
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+  open-api:
+    info:
+      title: "API de Gestión de Productos"
+      description: "Esta API permite crear, leer, actualizar y borrar productos en el sistema"
+      version: "1.0.0"
+
+stripe:
+  api:
+    key: "sk_test_51RVCWtP81VPsIAOYgw8nsRpl4lZtC1xAm1WYBYjIUhnsrLG8xeqf9VSST21SIVUTcbZBEurara0Gz5jIfmalSIwf00MhChoW3d"
+  webhook:
+    secret: aa
+server:
+  port: 8083
