@@ -1,16 +1,19 @@
 package com.tfg.order.application;
 
+import com.tfg.order.application.dto.CartResponse;
 import com.tfg.order.application.mapper.OrderMapper;
 import com.tfg.order.infrastructure.outbound.persistence.entity.Order;
-import com.tfg.order.infrastructure.outbound.persistence.entity.DeliveryMethod;
+import com.tfg.order.infrastructure.outbound.persistence.entity.DeliveryMethods;
 import com.tfg.order.infrastructure.outbound.persistence.entity.OrderItem;
 import com.tfg.order.infrastructure.outbound.persistence.entity.ProductItemOrdered;
 import com.tfg.order.infrastructure.inbound.rest.dto.request.CreateOrderRequest;
 import com.tfg.order.infrastructure.inbound.rest.dto.response.OrderResponse;
 import com.tfg.order.infrastructure.outbound.persistence.repository.OrderRepository;
 import com.tfg.order.infrastructure.outbound.persistence.repository.DeliveryMethodRepository;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,9 +22,12 @@ import java.util.stream.Collectors;
 @Service
 public class OrderService {
 
+    private static final String ACCOUNT_USER_INFO_URL = "http://localhost:8080/api/v1/cart";
+
     private final OrderRepository orderRepository;
     private final DeliveryMethodRepository deliveryMethodRepository;
     private final OrderMapper orderMapper;
+    private final RestTemplate restTemplate = new RestTemplate();
 
     public OrderService(OrderRepository orderRepository,
                         DeliveryMethodRepository deliveryMethodRepository,
@@ -32,31 +38,48 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse createOrder(CreateOrderRequest request, String buyerEmail) {
-        DeliveryMethod deliveryMethod = deliveryMethodRepository.findById(request.getDeliveryMethodId())
+    public OrderResponse createOrder(CreateOrderRequest request, String buyerEmail, String jSession) {
+        DeliveryMethods deliveryMethods = deliveryMethodRepository.findById(request.getDeliveryMethodId())
                 .orElseThrow(() -> new IllegalArgumentException("Delivery method not found"));
 
         Order order = new Order();
         order.setBuyerEmail(buyerEmail);
         order.setShippingAddress(request.getShippingAddress());
-        order.setDeliveryMethod(deliveryMethod);
+        order.setDeliveryMethods(deliveryMethods);
         order.setPaymentSummary(request.getPaymentSummary());
         order.setDiscount(request.getDiscount() != null ? request.getDiscount() : java.math.BigDecimal.ZERO);
-        order.setSubtotal(request.getOrderItems().stream()
-                .map(i -> i.getPrice().multiply(new java.math.BigDecimal(i.getQuantity())))
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.COOKIE, "JSESSIONID=" + jSession);
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<CartResponse> cartResponse;
+        try {
+            cartResponse = restTemplate.exchange(
+                    ACCOUNT_USER_INFO_URL + "?id=" + request.getCartId(),
+                    HttpMethod.GET,
+                    entity,
+                    CartResponse.class
+            );
+        } catch (Exception ex) {
+            return null;
+        }
+
+        order.setSubtotal(cartResponse.getBody().getItems().stream()
+                .map(i -> i.price().multiply(new java.math.BigDecimal(i.quantity())))
                 .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add));
-        order.setPaymentIntentId(request.getPaymentSummary().getBrand()); // Placeholder, adapt as needed
+        order.setPaymentIntentId(cartResponse.getBody().getPaymentIntentId()); // Placeholder, adapt as needed
 
         // Map items
-        List<OrderItem> items = request.getOrderItems().stream().map(iRequest -> {
+        List<OrderItem> items = cartResponse.getBody().getItems().stream().map(iRequest -> {
             OrderItem item = new OrderItem();
             ProductItemOrdered itemOrdered = new ProductItemOrdered();
-            itemOrdered.setProductId(iRequest.getProductId());
-            itemOrdered.setProductName(iRequest.getProductName());
-            itemOrdered.setPictureUrl(iRequest.getPictureUrl());
+            itemOrdered.setProductId(iRequest.productId());
+            itemOrdered.setProductName(iRequest.productName());
+            itemOrdered.setPictureUrl(iRequest.pictureUrl());
             item.setItemOrdered(itemOrdered);
-            item.setPrice(iRequest.getPrice());
-            item.setQuantity(iRequest.getQuantity());
+            item.setPrice(iRequest.price());
+            item.setQuantity(iRequest.quantity());
             item.setOrder(order);
             return item;
         }).collect(Collectors.toList());

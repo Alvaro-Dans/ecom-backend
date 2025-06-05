@@ -20,20 +20,21 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<OrderResponse> createOrder(@RequestBody CreateOrderRequest request,
-                                                     @RequestHeader("username") String username) {
-        OrderResponse response = orderService.createOrder(request, username);
-        return ResponseEntity.ok(response);
+                                                     @RequestHeader("X-User-Email") String username,
+                                                     @CookieValue("JSESSIONID") String jSession) {
+        OrderResponse response = orderService.createOrder(request, username, jSession);
+        return response != null ? ResponseEntity.ok(response) : ResponseEntity.internalServerError().build();
     }
 
     @GetMapping
-    public ResponseEntity<List<OrderResponse>> getOrdersForUser(@RequestHeader("username") String username) {
+    public ResponseEntity<List<OrderResponse>> getOrdersForUser(@RequestHeader("X-User-Email") String username) {
         List<OrderResponse> orders = orderService.getOrdersForUser(username);
         return ResponseEntity.ok(orders);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<OrderResponse> getOrderById(@PathVariable Long id,
-                                                      @RequestHeader("username") String username) {
+                                                      @RequestHeader("X-User-Email") String username) {
         return orderService.getOrderById(username, id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

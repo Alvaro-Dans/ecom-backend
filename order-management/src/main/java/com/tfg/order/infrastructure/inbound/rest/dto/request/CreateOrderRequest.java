@@ -12,13 +12,17 @@ import java.util.List;
 public class CreateOrderRequest {
     @NotNull
     private String cartId;
+
     @NotNull
     private Long deliveryMethodId;
+
+    private BigDecimal discount;
+
     @NotNull
     private ShippingAddress shippingAddress;
+
     @NotNull
     private PaymentSummary paymentSummary;
-    private BigDecimal discount;
-    @NotNull
-    private List<OrderItemRequest> orderItems;
+
+
 }

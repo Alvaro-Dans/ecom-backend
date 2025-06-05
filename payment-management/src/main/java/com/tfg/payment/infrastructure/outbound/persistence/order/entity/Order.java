@@ -1,4 +1,4 @@
-package com.tfg.order.infrastructure.outbound.persistence.entity;
+package com.tfg.payment.infrastructure.outbound.persistence.order.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;

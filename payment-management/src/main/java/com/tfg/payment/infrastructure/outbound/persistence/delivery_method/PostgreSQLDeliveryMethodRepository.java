@@ -1,4 +1,4 @@
-package com.tfg.payment.infrastructure.outbound.persistence;
+package com.tfg.payment.infrastructure.outbound.persistence.delivery_method;
 
 import com.tfg.payment.infrastructure.inbound.rest.dto.response.DeliveryMethodResponse;
 import org.springframework.stereotype.Repository;
@@ -25,5 +25,15 @@ public class PostgreSQLDeliveryMethodRepository {
                     deliveryMethod.getId()));
         });
         return response;
+    }
+
+    public DeliveryMethodResponse findById(int id) {
+        return repository.findById(id).map(deliveryMethod -> new DeliveryMethodResponse(
+                deliveryMethod.getShortName(),
+                deliveryMethod.getDeliveryTime(),
+                deliveryMethod.getDescription(),
+                deliveryMethod.getPrice(),
+                deliveryMethod.getId()
+        )).orElse(null);
     }
 }

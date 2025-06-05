@@ -1,4 +1,4 @@
-package com.tfg.payment.infrastructure.outbound.persistence;
+package com.tfg.payment.infrastructure.outbound.persistence.delivery_method;
 
 import jakarta.persistence.*;
 import lombok.Data;

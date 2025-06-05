@@ -10,18 +10,24 @@ import com.stripe.model.PaymentIntent;
 import com.stripe.net.Webhook;
 import com.stripe.param.PaymentIntentCreateParams;
 
+import com.stripe.param.PaymentIntentUpdateParams;
 import com.tfg.payment.infrastructure.inbound.rest.dto.request.CartProductRequest;
 import com.tfg.payment.infrastructure.inbound.rest.dto.request.CartRequest;
-import com.tfg.payment.infrastructure.inbound.rest.dto.request.ProductRequest;
 import com.tfg.payment.infrastructure.inbound.rest.dto.response.DeliveryMethodResponse;
-import com.tfg.payment.infrastructure.outbound.persistence.PostgreSQLDeliveryMethodRepository;
+import com.tfg.payment.infrastructure.outbound.persistence.delivery_method.PostgreSQLDeliveryMethodRepository;
+import com.tfg.payment.infrastructure.outbound.persistence.order.OrderRepository;
+import com.tfg.payment.infrastructure.outbound.persistence.order.entity.Order;
+import com.tfg.payment.infrastructure.outbound.persistence.order.entity.OrderStatus;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -33,11 +39,13 @@ public class PaymentService {
     private final StringRedisTemplate redisTemplate;
     private final ObjectMapper objectMapper;
     private final PostgreSQLDeliveryMethodRepository deliveryMethodRepository;
+    private final OrderRepository orderRepository;
 
-    public PaymentService(StringRedisTemplate redisTemplate, ObjectMapper objectMapper, PostgreSQLDeliveryMethodRepository deliveryMethodRepository) {
+    public PaymentService(StringRedisTemplate redisTemplate, ObjectMapper objectMapper, PostgreSQLDeliveryMethodRepository deliveryMethodRepository, OrderRepository orderRepository) {
         this.redisTemplate = redisTemplate;
         this.objectMapper = objectMapper;
         this.deliveryMethodRepository = deliveryMethodRepository;
+        this.orderRepository = orderRepository;
     }
 
     public CartRequest createOrUpdatePaymentIntent(String cartId) throws StripeException {
@@ -57,15 +65,27 @@ public class PaymentService {
 
         }
 
+
+
         Long amount = calculateAmount(cart) * 100L;
 
         // Create PaymentIntent
-        PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
-                .setAmount(amount)
-                .setCurrency("USD")
-                .putMetadata("cartId", cartId)
-                .addPaymentMethodType("card")
-                .build();
+        PaymentIntentCreateParams params = null;
+        if(Objects.nonNull(cart.getPaymentIntentId())) {
+            PaymentIntent existing = PaymentIntent.retrieve(cart.getPaymentIntentId());
+
+            PaymentIntentUpdateParams updateIntent = PaymentIntentUpdateParams.builder()
+                    .setAmount(amount)
+                    .build();
+            existing.update(updateIntent);
+            return cart;
+        }
+        params = PaymentIntentCreateParams.builder()
+                    .setAmount(amount)
+                    .setCurrency("USD")
+                    .putMetadata("cartId", cartId)
+                    .addPaymentMethodType("card")
+                    .build();
 
         PaymentIntent intent = PaymentIntent.create(params);
         cart.setClientSecret(intent.getClientSecret());
@@ -74,13 +94,13 @@ public class PaymentService {
     }
 
     private Long calculateAmount(CartRequest cart) {
+        DeliveryMethodResponse response = deliveryMethodRepository.findById(cart.getDeliveryMethodId());
+
         long amount = 0L;
-        if(null != cart) {
-            for (CartProductRequest product : cart.getItems()) {
-                amount += product.price().longValue();
-            }
+        for (CartProductRequest product : cart.getItems()) {
+            amount += product.price().longValue();
         }
-        return amount;
+        return response != null ? amount + response.getPrice().longValue() : amount;
     }
 
 
@@ -121,13 +141,34 @@ public class PaymentService {
                 handleChargeRefunded(event);
                 break;
 
-            // Agrega aquí más casos según los eventos que quieras manejar
-            // Ejemplos: "payment_method.attached", "invoice.payment_succeeded", etc.
-
             default:
                 log.warn("Evento de Stripe no manejado: {}", eventType);
                 break;
         }
+
+
+    }
+
+    private void updateOrderStatus(String paymentId, String statusString) {
+        // 1) Buscar la orden por id y buyerEmail
+        Order order = orderRepository
+                .findByPaymentIntentId(paymentId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "No se encontró la orden con id: " + paymentId));
+
+        // 2) Convertir el string al enum OrderStatus
+        OrderStatus newStatus;
+        try {
+            newStatus = OrderStatus.valueOf(statusString);
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalArgumentException(
+                    "Estado inválido: " + statusString + ". Valores permitidos: " +
+                            Arrays.toString(OrderStatus.values()));
+        }
+
+        // 3) Asignar el nuevo estado y guardar
+        order.setStatus(newStatus);
+        orderRepository.save(order);
     }
 
     /**
@@ -146,10 +187,7 @@ public class PaymentService {
             log.info("PaymentIntent exitoso: id={}, amount={}, currency={}, customer={}",
                     intentId, amountReceived, currency, customerId);
 
-            // TODO: aquí pon tu lógica de negocio, por ejemplo:
-            // - Buscar la orden en tu BD a partir de algún metadata
-            // - Marcarla como pagada
-            // - Enviar correo de confirmación, etc.
+            updateOrderStatus(intentId, OrderStatus.PAYMENT_RECEIVED.name());
 
         } else {
             log.error("No pudo deserializar el objeto PaymentIntent en payment_intent.succeeded");
@@ -170,7 +208,7 @@ public class PaymentService {
 
             log.warn("PaymentIntent fallido: id={}, error={}", intentId, lastPaymentErrorMessage);
 
-            // TODO: Lógica de negocio: marcar pedido como fallido, alertar al usuario, etc.
+            updateOrderStatus(intentId, OrderStatus.PAYMENT_FAILED.name());
 
         } else {
             log.error("No pudo deserializar el objeto PaymentIntent en payment_intent.payment_failed");
@@ -191,7 +229,7 @@ public class PaymentService {
             log.info("Cargo reembolsado: id={}, amountRefunded={}, fullyRefunded={}",
                     chargeId, amountRefunded, fullyRefunded);
 
-            // TODO: Lógica de negocio: actualizar estado de reembolso en tu BD, notificar al cliente, etc.
+            updateOrderStatus(chargeId, OrderStatus.REFUNDED.name());
 
         } else {
             log.error("No pudo deserializar el objeto Charge en charge.refunded");
