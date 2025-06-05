@@ -115,5 +115,5 @@ public interface AccountApi {
 
     @GetMapping("/validate-session")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> validateSession(Authentication auth);
+    public ResponseEntity<Void> validateSession();
 }

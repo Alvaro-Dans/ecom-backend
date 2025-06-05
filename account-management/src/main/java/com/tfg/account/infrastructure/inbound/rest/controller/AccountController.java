@@ -111,7 +111,7 @@ public class AccountController implements AccountApi {
      * Si no hay sesión o está caducada → 401 Unauthorized (Spring lo manejará automáticamente).
      */
     @Override
-    public ResponseEntity<Void> validateSession(Authentication auth) {
+    public ResponseEntity<Void> validateSession() {
         return ResponseEntity.noContent().build();
     }
 }

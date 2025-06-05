@@ -1,5 +1,6 @@
 package com.tfg.account.infrastructure.config.security;
 
+import com.tfg.account.domain.role.Role;
 import com.tfg.account.domain.user.User;
 import com.tfg.account.domain.user.UserRepository;
 import org.springframework.context.annotation.Bean;
@@ -7,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,11 +18,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.List;
 
 @Configuration
 @EnableMethodSecurity
@@ -42,7 +37,7 @@ public class SecurityConfig {
                     .builder()
                     .username(u.getEmail())
                     .password(u.getPasswordHash())
-                    .roles(u.getRoles().stream().map(r -> r.getName()).toArray(String[]::new))
+                    .roles(u.getRoles().stream().map(Role::getName).toArray(String[]::new))
                     .build();
         };
     }
@@ -60,17 +55,6 @@ public class SecurityConfig {
         return cfg.getAuthenticationManager();
     }
 
-    /*@Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration cfg = new CorsConfiguration();
-        cfg.setAllowedOrigins(List.of("https://localhost:4200"));
-        cfg.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
-        cfg.setAllowedHeaders(List.of("*"));
-        cfg.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource src = new UrlBasedCorsConfigurationSource();
-        src.registerCorsConfiguration("/**", cfg);
-        return src;
-    }*/
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -89,16 +73,17 @@ public class SecurityConfig {
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
                         // 4) resto de GETs públicos (p.ej. auth-status)
                         .requestMatchers(HttpMethod.GET, "/api/v1/account/auth-status").permitAll()
-                        // 5) el GET user-info requiere sesión: quítalo de permitAll
+                        // 5) user-info, se valida dentro del método
                         .requestMatchers(HttpMethod.GET, "/api/v1/account/user-info").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/account/validate-session").authenticated()
                         // 6) todo lo demás exige autenticación
                         .anyRequest().authenticated()
                 )
                 // sesiones por cookie
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 // deshabilita form login / basic
-                .formLogin(form -> form.disable())
-                .httpBasic(basic -> basic.disable())
+                .formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
                 // configura logout
                 .logout(logout -> logout
                         .logoutUrl("/api/v1/auth/logout")
