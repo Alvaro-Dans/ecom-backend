@@ -1,4 +1,4 @@
-package com.tfg.product.infrastructure.config.security;
+package com.tfg.payment.infrastructure.config.security;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -8,7 +8,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class CorsConfig {
-
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
