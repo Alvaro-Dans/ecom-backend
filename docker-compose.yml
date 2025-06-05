@@ -21,44 +21,80 @@ services:
 
   product-management:
     build:
-      context: .                # el build context es la carpeta product/
+      context: .
       dockerfile: ./.init/docker/Dockerfile
       args:
         MODULE: product-management
+    environment:
+      DB_HOST: db
+      SERVER_PORT: 8081
     ports:
-      - "8081:8080"                      # host 8081 → contenedor 8080
+      - "8081:8081"
     depends_on:
       - db
       - redis
 
   account-management:
     build:
-      context: ./account-management                 # contexto = carpeta account/
-      dockerfile: ../.init/docker/Dockerfile
+      context: .
+      dockerfile: ./.init/docker/Dockerfile
+      args:
+        MODULE: account-management
+    environment:
+      DB_HOST: db
+      SERVER_PORT: 8082
     ports:
-      - "8082:8080"                      # host 8082 → contenedor 8080
+      - "8082:8082"
     depends_on:
       - db
       - redis
 
   payment-management:
     build:
-      context: ./payment-management                 # contexto = carpeta payment/
-      dockerfile: ../.init/docker/Dockerfile
+      context: .
+      dockerfile: ./.init/docker/Dockerfile
+      args:
+        MODULE: payment-management
+    environment:
+      DB_HOST: db
+      SERVER_PORT: 8083
     ports:
-      - "8083:8080"                      # host 8083 → contenedor 8080
+      - "8083:8083"
     depends_on:
       - redis
 
   order-management:
     build:
-      context: ./order-management                   # contexto = carpeta order/
-      dockerfile: ../.init/docker/Dockerfile
+      context: .
+      dockerfile: ./.init/docker/Dockerfile
+      args:
+        MODULE: order-management
+    environment:
+      DB_HOST: db
+      SERVER_PORT: 8084
     ports:
-      - "8084:8080"                      # host 8084 → contenedor 8080
+      - "8084:8084"
     depends_on:
       - db
       - redis
+
+  ecom-gateway:
+    build:
+      context: ../ecom-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - product-management
+      - account-management
+      - payment-management
+      - order-management
+    environment:
+      ACCOUNT_HOST: account-management
+      PRODUCT_HOST: product-management
+      PAYMENT_HOST: payment-management
+      ORDER_HOST: order-management
+      SERVER_PORT: 8080
 
 volumes:
   db_data:

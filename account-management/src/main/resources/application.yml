@@ -2,15 +2,16 @@ spring:
   application:
     name: account-management
   datasource:
-    url: jdbc:postgresql://localhost:5432/ecommerce_db
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/ecommerce_db
     username: ecommerce
     password: ecommerce
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     show-sql: true
-server:
-  port: 8082
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
 springdoc:
   api-docs:
@@ -22,3 +23,7 @@ springdoc:
       title: "API de Gestión de Usuarios"
       description: "Esta API permite crear, registrar y autenticar usuarios en el sistema"
       version: "1.0.0"
+
+
+server:
+  port: ${SERVER_PORT:8082}

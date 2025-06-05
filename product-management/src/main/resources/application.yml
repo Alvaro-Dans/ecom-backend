@@ -2,7 +2,7 @@ spring:
   application:
     name: product-management
   datasource:
-    url: jdbc:postgresql://db:5432/ecommerce_db
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/ecommerce_db
     username: ecommerce
     password: ecommerce
   jpa:
@@ -12,6 +12,7 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
 
 springdoc:
   api-docs:
@@ -25,4 +26,4 @@ springdoc:
       version: "1.0.0"
 
 server:
-  port: 8081
+  port: ${SERVER_PORT:8081}
