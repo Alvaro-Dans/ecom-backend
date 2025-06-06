@@ -9,6 +9,8 @@ import com.tfg.product.infrastructure.inbound.rest.dto.request.ProductRequest;
 import com.tfg.product.infrastructure.inbound.rest.dto.response.PagedProductsResponse;
 import com.tfg.product.infrastructure.inbound.rest.dto.response.ProductResponse;
 import com.tfg.product.infrastructure.mapper.ProductDtoMapper;
+import io.swagger.v3.oas.annotations.Parameter;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashSet;
@@ -43,7 +45,7 @@ public class ProductManagementController implements ProductApi {
     }
 
     @Override
-    public PagedProductsResponse getProductsPagedAndSorted(int page, int size, String sort) {
+    public PagedProductsResponse getProductsPagedAndSorted(int page, int size, String sort, String brands, String types, String search) { // TODO
         List<ProductResponse> productListResponse = productFinder.findProductsPagedAndSorted(page, size, sort).stream().map(productDtoMapper::toResponse).toList();
         return new PagedProductsResponse(page, size, productFinder.count(), productListResponse);
     }

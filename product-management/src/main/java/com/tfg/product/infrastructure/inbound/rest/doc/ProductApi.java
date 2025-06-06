@@ -69,7 +69,16 @@ public interface ProductApi {
             @RequestParam(name = "pageSize", defaultValue = "10") int size,
 
             @Parameter(description = "Criterio de ordenación", example = "name")
-            @RequestParam(name = "sort", defaultValue = "name") String sort
+            @RequestParam(name = "sort", defaultValue = "name") String sort,
+
+            @Parameter(description = "Búsqueda por marca", example = "Alpinestars")
+            @RequestParam(name = "brands") String brands,
+
+            @Parameter(description = "Búsqueda por tipo", example = "Boots")
+            @RequestParam(name = "types") String types,
+
+            @Parameter(description = "Búsqueda por nombre", example = "AGV")
+            @RequestParam(name = "search") String search
 
 
     );
