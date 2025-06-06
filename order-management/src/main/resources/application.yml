@@ -13,6 +13,8 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
+cart:
+  url: http://${GATEWAY_HOST:localhost}:8080/api/v1/cart
 
 server:
   port: ${SERVER_PORT:8084}

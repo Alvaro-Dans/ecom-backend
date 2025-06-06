@@ -28,6 +28,7 @@ services:
     environment:
       DB_HOST: db
       SERVER_PORT: 8081
+      REDIS_HOST: redis
     ports:
       - "8081:8081"
     depends_on:
@@ -58,6 +59,8 @@ services:
     environment:
       DB_HOST: db
       SERVER_PORT: 8083
+      REDIS_HOST: redis
+      STRIPE_WEBHOOK_SECRET: whsec_PjzukpvtwqZxnsO3fhx2l2yEpZdmzNur
     ports:
       - "8083:8083"
     depends_on:
@@ -72,6 +75,7 @@ services:
     environment:
       DB_HOST: db
       SERVER_PORT: 8084
+      GATEWAY_HOST: ecom-gateway
     ports:
       - "8084:8084"
     depends_on:
@@ -95,6 +99,7 @@ services:
       PAYMENT_HOST: payment-management
       ORDER_HOST: order-management
       SERVER_PORT: 8080
+      ALLOWED_ORIGINS: https://d3j4s5sdkhtejs.cloudfront.net/,https://localhost:4200
 
 volumes:
   db_data:

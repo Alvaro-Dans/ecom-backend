@@ -10,6 +10,7 @@ import com.tfg.order.infrastructure.inbound.rest.dto.request.CreateOrderRequest;
 import com.tfg.order.infrastructure.inbound.rest.dto.response.OrderResponse;
 import com.tfg.order.infrastructure.outbound.persistence.repository.OrderRepository;
 import com.tfg.order.infrastructure.outbound.persistence.repository.DeliveryMethodRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +23,8 @@ import java.util.stream.Collectors;
 @Service
 public class OrderService {
 
-    private static final String ACCOUNT_USER_INFO_URL = "http://localhost:8080/api/v1/cart";
+    @Value("${cart.url}")
+    private String CART_URL;
 
     private final OrderRepository orderRepository;
     private final DeliveryMethodRepository deliveryMethodRepository;
@@ -56,7 +58,7 @@ public class OrderService {
         ResponseEntity<CartResponse> cartResponse;
         try {
             cartResponse = restTemplate.exchange(
-                    ACCOUNT_USER_INFO_URL + "?id=" + request.getCartId(),
+                    CART_URL + "?id=" + request.getCartId(),
                     HttpMethod.GET,
                     entity,
                     CartResponse.class
